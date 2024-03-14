@@ -11,10 +11,10 @@ func main() {
 	db := database.InitDb()
 	defer db.Close()
 
-	err := db.Ping()
-	if err != nil {
-		panic(err)
-	}
+	// err := db.Ping()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	e := echo.New()
 

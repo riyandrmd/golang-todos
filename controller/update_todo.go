@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -18,14 +19,36 @@ func NewUpdateTodoController(e *echo.Echo, db *sql.DB) {
 		id := ctx.Param("id")
 
 		var request UpdateRequest
-		json.NewDecoder(ctx.Request().Body).Decode(&request)
 
-		_, err := db.Exec(
-			"UPDATE todos SET title = ?, description = ? WHERE id = ?",
-			request.Title,
-			request.Description,
-			id,
-		)
+		err := json.NewDecoder(ctx.Request().Body).Decode(&request)
+
+		if err != nil {
+			return ctx.String(http.StatusBadRequest, "Invalid request body")
+		}
+
+		if request.Title == "" && request.Description == "" {
+			return ctx.String(http.StatusBadRequest, "No fields to update")
+		}
+
+		query := "UPDATE todos SET"
+		var params []interface{}
+
+		if request.Title != "" {
+			query += " title = ?,"
+			params = append(params, request.Title)
+		}
+
+		if request.Description != "" {
+			query += " description = ?,"
+			params = append(params, request.Description)
+		}
+
+		query = strings.TrimSuffix(query, ",")
+
+		query += " WHERE id = ?"
+		params = append(params, id)
+
+		_, err = db.Exec(query, params...)
 
 		if err != nil {
 			return ctx.String(http.StatusInternalServerError, err.Error())
