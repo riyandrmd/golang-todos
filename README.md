@@ -1,1 +1,2 @@
-## Belajar Bikin API Golang Pake Framework Echo
+## todos app using Golang with Echo framework
+learn to create RestAPI using Echo framework for todos app.
