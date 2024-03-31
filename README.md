@@ -1,2 +1,2 @@
-## todos app using Golang with Echo framework
+## Todos app using Golang with Echo framework
 learn to create RestAPI using Echo framework for todos app.
